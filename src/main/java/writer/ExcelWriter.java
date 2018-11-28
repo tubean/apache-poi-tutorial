@@ -19,9 +19,9 @@ public class ExcelWriter {
     static {
         Calendar dateOfBirth = Calendar.getInstance();
         dateOfBirth.set(1995, 0, 8); // 0 means January
-        employees.add(new Employee("Tubean", "tubean@github.com", dateOfBirth.getTime(), 22d, 100d, null));
+        employees.add(new Employee("Tubean", "tubean@github.com", dateOfBirth.getTime(), 22d, 100d));
         dateOfBirth.set(1998, 2, 15);
-        employees.add(new Employee("Quynh", "vivichan@gmail.com", dateOfBirth.getTime(), 21d, 120d, null));
+        employees.add(new Employee("Quynh", "vivichan@gmail.com", dateOfBirth.getTime(), 21d, 120d));
     }
 
     public static void main(String[] args) throws IOException, InvalidFormatException {

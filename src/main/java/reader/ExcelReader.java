@@ -53,6 +53,9 @@ public class ExcelReader {
         // Getting the Sheet at index zero
         Sheet sheet = workbook.getSheetAt(0);
 
+        // Getting the evaluator
+        FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
+
         // Create a DataFormatter to format and get each cell's value as String
         DataFormatter dataFormatter = new DataFormatter();
 
@@ -67,8 +70,9 @@ public class ExcelReader {
 
             while (cellIterator.hasNext()) {
                 Cell cell = cellIterator.next();
-                String cellValue = dataFormatter.formatCellValue(cell);
-                System.out.print(cellValue + "\t");
+//                String cellValue = dataFormatter.formatCellValue(cell);
+//                System.out.print(cellValue + "\t");
+                System.out.print(getCellValue(cell,evaluator) + "\t");
             }
             System.out.println();
         }
@@ -77,8 +81,9 @@ public class ExcelReader {
         System.out.println("\n\nIterating over Rows and Columns using for-each loop\n");
         for (Row row: sheet) {
             for(Cell cell: row) {
-                String cellValue = dataFormatter.formatCellValue(cell);
-                System.out.print(cellValue + "\t");
+//                String cellValue = dataFormatter.formatCellValue(cell);
+//                System.out.print(cellValue + "\t");
+                System.out.print(getCellValue(cell,evaluator) + "\t");
             }
             System.out.println();
         }
@@ -87,13 +92,34 @@ public class ExcelReader {
         System.out.println("\n\nIterating over Rows and Columns using Java 8 forEach with lambda\n");
         sheet.forEach(row -> {
             row.forEach(cell -> {
-                String cellValue = dataFormatter.formatCellValue(cell);
-                System.out.print(cellValue + "\t");
+//                String cellValue = dataFormatter.formatCellValue(cell);
+//                System.out.print(cellValue + "\t");
+                System.out.print(getCellValue(cell,evaluator) + "\t");
             });
             System.out.println();
         });
 
         // Closing the workbook
         workbook.close();
+    }
+
+    private static Object getCellValue(Cell cell, FormulaEvaluator evaluator) {
+        CellValue cellValue = evaluator.evaluate(cell);
+        switch (cellValue.getCellTypeEnum()) {
+            case BOOLEAN:
+                return cellValue.getBooleanValue();
+            case NUMERIC:
+                return cellValue.getNumberValue();
+            case STRING:
+                return cellValue.getStringValue();
+            case BLANK:
+                return "";
+            case ERROR:
+                return cellValue.getError(cell.getErrorCellValue()).getStringValue();
+            // CELL_TYPE_FORMULA will never happen
+            case FORMULA:
+            default:
+                return null;
+        }
     }
 }
